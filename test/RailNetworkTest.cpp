@@ -2,6 +2,14 @@
 
 #include "Rail.h"
 
+TEST(RailNetwork, addRailPoint)
+{
+    RailNetwork railNet;
+    Rail * rail;
+    rail = railNet.addRail(9, 100, 9, 100);
+    ASSERT_NULL(rail);
+}
+
 TEST(RailNetwork, addRailOne)
 {
     RailNetwork railNet;
@@ -29,13 +37,35 @@ TEST(RailNetwork, addRailTwoSep)
 
     railB = railNet.addRail(1, 2, 30, 40);
     ASSERT_NOTNULL(railB);
+    ASSERT_NE(railA, railB);
     ASSERT_NULL(railB->next(0));
     ASSERT_NULL(railB->next(1));
-
-    ASSERT_NE(railA, railB);
 }
 
 TEST(RailNetwork, addRailTwoConn)
+{
+    RailNetwork railNet;
+    Rail * railA;
+    Rail * railB;
+
+    railA = railNet.addRail(3, 1, 52, 14);
+    ASSERT_NOTNULL(railA);
+    ASSERT_NULL(railA->next(0));
+    ASSERT_NULL(railA->next(1));
+
+    railB = railNet.addRail(52, 14, 115, 25);
+    ASSERT_NOTNULL(railB);
+    ASSERT_NE(railA, railB);
+
+    ASSERT_NULL(railB->next(1));
+    ASSERT_NOTNULL(railB->next(0));
+    ASSERT_EQ(railB->next(0), railA);
+    ASSERT_NULL(railA->next(0));
+    ASSERT_NOTNULL(railA->next(1));
+    ASSERT_EQ(railA->next(1), railB);
+}
+
+TEST(RailNetwork, addRailTwoConnRev)
 {
     RailNetwork railNet;
     Rail * railA;
@@ -48,12 +78,14 @@ TEST(RailNetwork, addRailTwoConn)
 
     railB = railNet.addRail(1000, 1000, 115, 25);
     ASSERT_NOTNULL(railB);
+    ASSERT_NE(railA, railB);
+
     ASSERT_NULL(railB->next(0));
     ASSERT_NOTNULL(railB->next(1));
+    ASSERT_EQ(railB->next(1), railA);
     ASSERT_NULL(railA->next(0));
     ASSERT_NOTNULL(railA->next(1));
-
-    ASSERT_NE(railA, railB);
+    ASSERT_EQ(railA->next(1), railB);
 }
 
 TEST(RailNetwork, addRailThreeMiddle)
@@ -82,12 +114,16 @@ TEST(RailNetwork, addRailThreeMiddle)
 
     rails[2] = rail;
 
+    ASSERT_NOTNULL(rails[0]->next(1));
     ASSERT_EQ(rails[0]->next(1), rails[2]);
     ASSERT_NULL(rails[0]->next(0));
+    ASSERT_NOTNULL(rails[1]->next(0));
     ASSERT_EQ(rails[1]->next(0), rails[2]);
     ASSERT_NULL(rails[1]->next(1));
 
-    ASSERT_EQ(rails[2]->next(1), rails[0]);
+    ASSERT_NOTNULL(rails[2]->next(0));
+    ASSERT_NOTNULL(rails[2]->next(1));
     ASSERT_EQ(rails[2]->next(0), rails[1]);
+    ASSERT_EQ(rails[2]->next(1), rails[0]);
 }
 

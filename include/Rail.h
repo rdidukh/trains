@@ -19,8 +19,6 @@ struct Splice
 {
     Splice(): rail(nullptr), end(-1) {}
     Splice(Rail * r, int e): rail(r), end(e) {}
-//    bool operator==(const Rail * r) const { return rail == r; }
-//    bool operator==(int e) const { return end == e; }
 
     Rail * rail;
     int end;

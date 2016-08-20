@@ -1,6 +1,7 @@
 #include "Rail.h"
 
 #include <iostream>
+#include <memory>
 #include <cassert>
 
 std::ostream & operator<<(std::ostream & os, Rail & rail)
@@ -31,16 +32,16 @@ RailNetwork::~RailNetwork()
 
 Rail * RailNetwork::addRail(int x1, int y1, int x2, int y2)
 {   
-    if(x1 == x2 && x2 == y2) return nullptr;
+    if(x1 == x2 && y1 == y2) return nullptr;
     /* TODO: check rail for correctness(intersection, overlap, etc) */
 
-    Rail rail(x1, y1, x2, y2);
+    std::unique_ptr<Rail> rail(new Rail(x1, y1, x2, y2));
 
     std::vector<std::pair<Splice, int>> update;
 
     for(int i = 0; i <= 1; i++)
     {
-        Point & point = rail.point[i];
+        Point & point = rail->point[i];
 
         if(points.count(point))
         {
@@ -58,10 +59,9 @@ Rail * RailNetwork::addRail(int x1, int y1, int x2, int y2)
                 {
                     update.emplace_back(splice, i);
                 }
-
-                if(rail.next(i) == nullptr)
+                if(rail->next(i) == nullptr)
                 {
-                    rail.splice[i] = splice;
+                    rail->splice[i] = splice;
                 }
             }
             else if(splices.size() == 2)
@@ -72,19 +72,17 @@ Rail * RailNetwork::addRail(int x1, int y1, int x2, int y2)
         }
     }
 
-    Rail * railPtr = new Rail(rail);
-
-    rails.push_back(railPtr);
+    rails.push_back(rail.get());
 
     for(int i = 0; i <= 1; i++)
-        points[rail.point[0]].push_back(railPtr->splice[i]);
+        points[rail->point[i]].emplace_back(rail.get(), i);
 
     for(auto & p : update)
     {
         Splice & sp = p.first;
         int end = p.second;
-        sp.rail->splice[p.first.end] = {railPtr, end};
+        sp.rail->splice[p.first.end] = {rail.get(), end};
     }
 
-    return railPtr;
+    return rail.release();
 }
