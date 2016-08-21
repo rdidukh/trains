@@ -4,14 +4,15 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <cmath>
+#include <array>
 
 struct Point
 {
     int x;
     int y;
+    float dist(const Point & p) const;
 };
-
-bool operator<(const Point & a, const Point & b);
 
 struct Rail;
 
@@ -26,24 +27,15 @@ struct Splice
 
 struct Rail
 {
-    Rail(int x1, int y1, int x2, int y2)
-    {
-        point[0] = { x1, y1 };
-        point[1] = { x2, y2 };
-    }
+    Rail(int x1, int y1, int x2, int y2);
 
-    Rail * next(int end)
-    {
-        return splice[end].rail;
-    }
+    Rail * next(int end) const;
 
-    Point point[2];
-    Splice splice[2];
+    std::array<Point,  2> point;
+    std::array<Splice, 2> splice;
+    float length;
 };
 
-bool operator<(const Rail & a, const Rail & b);
-
-std::ostream & operator<<(std::ostream & os, Rail & rail);
 
 struct Position
 {
@@ -52,3 +44,6 @@ struct Position
 };
 
 Position operator+(const Position & pos, float rhs);
+bool operator<(const Rail & a, const Rail & b);
+std::ostream & operator<<(std::ostream & os, Rail & rail);
+bool operator<(const Point & a, const Point & b);

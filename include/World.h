@@ -6,7 +6,7 @@
 class World
 {
 public:
-    Rail * addRail(int startX, int startY, int endX, int endY);
+    Rail * addRail(int x1, int y1, int x2, int y2);
     ~World();
 private:
     std::vector<Rail *> rails;
