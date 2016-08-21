@@ -16,5 +16,5 @@ target_link_libraries(trains.bin trains glut GL)
 target_compile_options(trains.bin PUBLIC -std=c++11 -Wall -Werror)
 target_include_directories(trains.bin PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-add_subdirectory(test)
+add_subdirectory(unittest)
 

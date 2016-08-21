@@ -52,18 +52,3 @@ struct Position
 };
 
 Position operator+(const Position & pos, float rhs);
-
-class RailNetwork
-{
-    public:
-    RailNetwork();
-    ~RailNetwork();
-
-    Rail * addRail(int startX, int startY, int endX, int endY);
-
-    private:
-    std::vector<Rail *> rails;
-
-    std::map<Point, std::vector<Splice>> points;
-};
-

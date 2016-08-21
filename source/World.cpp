@@ -1,28 +1,10 @@
-#include "Rail.h"
+#include "World.h"
 
-#include <iostream>
 #include <memory>
-#include <cassert>
 
-std::ostream & operator<<(std::ostream & os, Rail & rail)
-{
-    os << "[" << rail.point[0].x << ", " << rail.point[0].y << ", " << rail.point[1].x << ", " << rail.point[1].y << "]";
-    return os;
-}
+#include <Assert.h>
 
-bool operator<(const Rail & a, const Rail & b)
-{
-    if(a.point[0] < b.point[0]) return true;
-    if(b.point[0] < a.point[0]) return false;
-    return a.point[1] < b.point[1];
-}
-
-RailNetwork::RailNetwork()
-{
-
-}
-
-RailNetwork::~RailNetwork()
+World::~World()
 {
     for(Rail * rail : rails)
     {
@@ -30,8 +12,8 @@ RailNetwork::~RailNetwork()
     }
 }
 
-Rail * RailNetwork::addRail(int x1, int y1, int x2, int y2)
-{   
+Rail * World::addRail(int x1, int y1, int x2, int y2)
+{
     if(x1 == x2 && y1 == y2) return nullptr;
     /* TODO: check rail for correctness(intersection, overlap, etc) */
 
@@ -47,13 +29,13 @@ Rail * RailNetwork::addRail(int x1, int y1, int x2, int y2)
         {
             auto & splices = points[point];
 
-            assert(!splices.empty());
+            ASSERT(!splices.empty());
 
             if(splices.size() == 1)
             {
                 Splice & splice = splices[0];
 
-                assert(splice.rail);
+                ASSERT(splice.rail);
 
                 if(splice.rail->next(splice.end) == nullptr)
                 {

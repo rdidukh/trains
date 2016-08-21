@@ -1,20 +1,21 @@
 #include "RdTest.h"
 
 #include "Rail.h"
+#include "World.h"
 
-TEST(RailNetwork, addRailPoint)
+TEST(World, addRailPoint)
 {
-    RailNetwork railNet;
+    World world;
     Rail * rail;
-    rail = railNet.addRail(9, 100, 9, 100);
+    rail = world.addRail(9, 100, 9, 100);
     ASSERT_NULL(rail);
 }
 
-TEST(RailNetwork, addRailOne)
+TEST(World, addRailOne)
 {
-    RailNetwork railNet;
+    World world;
     Rail * rail;
-    rail = railNet.addRail(785, -126, 977, 15);
+    rail = world.addRail(785, -126, 977, 15);
     ASSERT_NOTNULL(rail);
     ASSERT_NULL(rail->next(0));
     ASSERT_NULL(rail->next(1));
@@ -24,36 +25,36 @@ TEST(RailNetwork, addRailOne)
     ASSERT_EQ(rail->point[1].y, 15);
 }
 
-TEST(RailNetwork, addRailTwoSep)
+TEST(World, addRailTwoSep)
 {
-    RailNetwork railNet;
+    World world;
     Rail * railA;
     Rail * railB;
 
-    railA = railNet.addRail(115, 100, 200, 107);
+    railA = world.addRail(115, 100, 200, 107);
     ASSERT_NOTNULL(railA);
     ASSERT_NULL(railA->next(0));
     ASSERT_NULL(railA->next(1));
 
-    railB = railNet.addRail(1, 2, 30, 40);
+    railB = world.addRail(1, 2, 30, 40);
     ASSERT_NOTNULL(railB);
     ASSERT_NE(railA, railB);
     ASSERT_NULL(railB->next(0));
     ASSERT_NULL(railB->next(1));
 }
 
-TEST(RailNetwork, addRailTwoConn)
+TEST(World, addRailTwoConn)
 {
-    RailNetwork railNet;
+    World world;
     Rail * railA;
     Rail * railB;
 
-    railA = railNet.addRail(3, 1, 52, 14);
+    railA = world.addRail(3, 1, 52, 14);
     ASSERT_NOTNULL(railA);
     ASSERT_NULL(railA->next(0));
     ASSERT_NULL(railA->next(1));
 
-    railB = railNet.addRail(52, 14, 115, 25);
+    railB = world.addRail(52, 14, 115, 25);
     ASSERT_NOTNULL(railB);
     ASSERT_NE(railA, railB);
 
@@ -65,18 +66,18 @@ TEST(RailNetwork, addRailTwoConn)
     ASSERT_EQ(railA->next(1), railB);
 }
 
-TEST(RailNetwork, addRailTwoConnRev)
+TEST(World, addRailTwoConnRev)
 {
-    RailNetwork railNet;
+    World world;
     Rail * railA;
     Rail * railB;
 
-    railA = railNet.addRail(7, 10, 115, 25);
+    railA = world.addRail(7, 10, 115, 25);
     ASSERT_NOTNULL(railA);
     ASSERT_NULL(railA->next(0));
     ASSERT_NULL(railA->next(1));
 
-    railB = railNet.addRail(1000, 1000, 115, 25);
+    railB = world.addRail(1000, 1000, 115, 25);
     ASSERT_NOTNULL(railB);
     ASSERT_NE(railA, railB);
 
@@ -88,27 +89,27 @@ TEST(RailNetwork, addRailTwoConnRev)
     ASSERT_EQ(railA->next(1), railB);
 }
 
-TEST(RailNetwork, addRailThreeMiddle)
+TEST(World, addRailThreeMiddle)
 {
-    RailNetwork railNet;
+    World world;
     Rail * rail;
     Rail * rails[3];
 
-    rail = railNet.addRail(0, 0, 1, 1);
+    rail = world.addRail(0, 0, 1, 1);
     ASSERT_NOTNULL(rail);
     ASSERT_NULL(rail->next(0));
     ASSERT_NULL(rail->next(1));
 
     rails[0] = rail;
 
-    rail = railNet.addRail(2, 2, 3, 3);
+    rail = world.addRail(2, 2, 3, 3);
     ASSERT_NOTNULL(rail);
     ASSERT_NULL(rail->next(0));
     ASSERT_NULL(rail->next(1));
 
     rails[1] = rail;
 
-    rail = railNet.addRail(2, 2, 1, 1);
+    rail = world.addRail(2, 2, 1, 1);
 
     ASSERT_NOTNULL(rail);
 
@@ -126,4 +127,3 @@ TEST(RailNetwork, addRailThreeMiddle)
     ASSERT_EQ(rails[2]->next(0), rails[1]);
     ASSERT_EQ(rails[2]->next(1), rails[0]);
 }
-
