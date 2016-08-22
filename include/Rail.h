@@ -46,7 +46,11 @@ struct Position
     Position(Rail * r = nullptr, float off = 0);
     Rail * rail;
     float offset;
-    void advance(float rhs);
+    void advance(float distance);
+    /*
+     * TODO:
+     *  Point point();
+     */
 };
 
 bool operator<(const Rail & a, const Rail & b);

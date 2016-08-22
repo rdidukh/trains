@@ -49,7 +49,8 @@ TEST(Position, advanceRRF)
 {
     Rail railA(0, 0, 3, 4);
     Rail railB(3, 4, 7, 7);
-    Rail::connect(&railA, &railB);
+    bool ret = Rail::connect(&railA, &railB);
+    ASSERT_TRUE(ret);
 
     Position pos(&railA, 2);
 
@@ -85,11 +86,12 @@ TEST(Position, advanceRLB)
 {
     Rail railA(0, 0, 3, 4);
     Rail railB(7, 7, 3, 4);
-    Rail::connect(&railA, &railB);
+    bool ret = Rail::connect(&railA, &railB);
+    ASSERT_TRUE(ret);
 
     Position pos(&railB, 2);
 
-    pos.advance(-6);
+    pos.advance(6);
     ASSERT_NOTNULL(pos.rail);
     ASSERT_EQ(pos.rail, &railA);
     ASSERT_EQ(pos.offset, 2);

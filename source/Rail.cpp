@@ -26,14 +26,13 @@ bool Rail::connect(Rail *railA, Rail *railB)
     for(endA = 0; endA <= 1; endA++)
         for(endB = 0; endB <=1; endB++)
             if(railA->point[endA] == railB->point[endB])
-                break;
+            {
+                railA->splice[endA] = {railB, endB};
+                railB->splice[endB] = {railA, endA};
+                return true;
+            }
 
-    if(railA->point[endA] != railB->point[endB]) return false;
-
-    railA->splice[endA] = {railB, endB};
-    railB->splice[endB] = {railA, endA};
-
-    return true;
+    return false;
 }
 
 std::ostream & operator<<(std::ostream & os, Rail & rail)
@@ -86,21 +85,34 @@ Position::Position(Rail *r, float off):
 
 void Position::advance(float d)
 {
-    float off = this->offset +d ;
+    offset += d ;
 
-    while(rail && (off < 0 || off > rail->length))
+    while(rail && (offset < 0 || offset > rail->length))
     {
-        if(off > rail->length)
+        if(offset > rail->length)
         {
-
+            offset -= rail->length;
+            if(rail->splice[1].end == 0)
+            {
+                offset = offset;
+            }
+            else if(rail->splice[1].rail != nullptr)
+            {
+                offset = rail->next(1)->length - offset;
+            }
+            rail = rail->next(1);
         }
-        else if(off < 0)
+        else if(offset < 0)
         {
-
-        }
-        else
-        {
-
+            if(rail->splice[0].end == 0)
+            {
+                offset = -offset;
+            }
+            else if(rail->splice[0].rail != nullptr)
+            {
+                offset = rail->next(0)->length + offset;
+            }
+            rail = rail->next(0);
         }
     }
 
