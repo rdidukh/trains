@@ -7,8 +7,18 @@ class World
 {
 public:
     Rail * addRail(int x1, int y1, int x2, int y2);
+    Rail * addRail(Rail * rail);
+    void addTrain(Train & train);
+    void moveTrain(Train * train, float dTime);
+    void updateTrain(Train * train, float dTime);
     ~World();
+
+    void update(float dTime);
+
 private:
+    float time;
     std::vector<Rail *> rails;
+    std::set<Rail* > allocRails;
     std::map<Point, std::vector<Splice>> points;
+    std::vector<Train *> trains;
 };

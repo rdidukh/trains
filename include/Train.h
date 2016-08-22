@@ -5,7 +5,10 @@
 class Train
 {
 public:
-
+    Position head;
+    float speed;
+    float length;
+    Train();
 private:
 
     enum class State
@@ -13,8 +16,5 @@ private:
         Idle,
     };
 
-    Position head;
-    float length;
-    float speed;
     State state;
 };

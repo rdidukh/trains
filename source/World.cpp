@@ -6,7 +6,7 @@
 
 World::~World()
 {
-    for(Rail * rail : rails)
+    for(Rail * rail : allocRails)
     {
         delete rail;
     }
@@ -66,5 +66,38 @@ Rail * World::addRail(int x1, int y1, int x2, int y2)
         sp.rail->splice[p.first.end] = {rail.get(), end};
     }
 
+    allocRails.insert(rail.get());
+
     return rail.release();
+}
+
+Rail *World::addRail(Rail *rail)
+{
+    return nullptr;
+}
+
+void World::addTrain(Train& train)
+{
+    trains.push_back(&train);
+}
+
+void World::moveTrain(Train *train, float dTime)
+{
+    train->head.advance(dTime * train->speed);
+}
+
+void World::updateTrain(Train *train, float dTime)
+{
+    train->speed += dTime * 0;
+}
+
+void World::update(float dTime)
+{
+    for(Train * train : trains)
+    {
+        moveTrain(train, dTime);
+        updateTrain(train, dTime);
+    }
+
+    time += dTime;
 }

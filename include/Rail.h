@@ -12,6 +12,9 @@ struct Point
     int x;
     int y;
     float dist(const Point & p) const;
+    bool operator<(const Point & point) const;
+    bool operator==(const Point & point) const;
+    bool operator!=(const Point & point) const;
 };
 
 struct Rail;
@@ -30,6 +33,7 @@ struct Rail
     Rail(int x1, int y1, int x2, int y2);
 
     Rail * next(int end) const;
+    static bool connect(Rail * railA, Rail * railB);
 
     std::array<Point,  2> point;
     std::array<Splice, 2> splice;
@@ -39,11 +43,12 @@ struct Rail
 
 struct Position
 {
+    Position(Rail * r = nullptr, float off = 0);
     Rail * rail;
     float offset;
+    void advance(float rhs);
 };
 
-Position operator+(const Position & pos, float rhs);
 bool operator<(const Rail & a, const Rail & b);
 std::ostream & operator<<(std::ostream & os, Rail & rail);
-bool operator<(const Point & a, const Point & b);
+
