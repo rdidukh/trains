@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <memory>
-#include <cassert>
+#include <Assert.h>
 
-Rail::Rail(int x1, int y1, int x2, int y2)
+Rail::Rail(float x1, float y1, float x2, float y2)
 {
     point[0] = { x1, y1 };
     point[1] = { x2, y2 };
@@ -62,19 +62,24 @@ float Point::dist(const Point &p) const
 
 bool Point::operator<(const Point& p) const
 {
-    if(x < p.x) return true;
-    if(p.x < x) return false;
-    return y < p.y;
+    int64_t ix = static_cast<int64_t>(x/error+0.5f);
+    int64_t iy = static_cast<int64_t>(y/error+0.5f);
+    int64_t pix = static_cast<int64_t>(p.x/error+0.5f);
+    int64_t piy = static_cast<int64_t>(p.y/error+0.5f);
+
+    if(ix < pix) return true;
+    if(pix < ix) return false;
+    return iy < piy;
 }
 
 bool Point::operator==(const Point& p) const
 {
-    return x == p.x && y == p.y;
+    return std::fabs(x - p.x) < error && std::fabs(y - p.y) < error;
 }
 
 bool Point::operator!=(const Point &p) const
 {
-    return x != p.x || y != p.y;
+    return std::fabs(x - p.x) >= error || std::fabs(y - p.y) >= error;
 }
 
 Position::Position(Rail *r, float off):
@@ -83,12 +88,26 @@ Position::Position(Rail *r, float off):
 
 }
 
+
 void Position::advance(float d)
 {
     offset += d ;
 
     while(rail && (offset < 0 || offset > rail->length))
     {
+        offset -= offset > 0 ? rail->length : 0.0;
+        int end = static_cast<int>(std::copysign(0.5, offset) + 0.5);
+
+        if(rail->splice[end].end == 0)
+        {
+            offset = std::fabs(offset);
+        }
+        else if(rail->next(end) != nullptr)
+        {
+            offset = rail->next(end)->length - std::fabs(offset);
+        }
+        rail = rail->next(end);
+#if 0
         if(offset > rail->length)
         {
             offset -= rail->length;
@@ -104,6 +123,7 @@ void Position::advance(float d)
         }
         else if(offset < 0)
         {
+            offset -= 0;
             if(rail->splice[0].end == 0)
             {
                 offset = -offset;
@@ -114,6 +134,22 @@ void Position::advance(float d)
             }
             rail = rail->next(0);
         }
+#endif
     }
+}
+
+template<class Func>
+void Position::polyline(float distance)
+{
 
 }
+
+Point Position::point()
+{
+    ASSERT(rail);
+    float x = rail->point[0].x;
+    float y = rail->point[0].y;
+    return {x, y};
+}
+
+

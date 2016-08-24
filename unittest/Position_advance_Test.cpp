@@ -68,7 +68,8 @@ TEST(Position, advanceRRB)
 {
     Rail railA(0, 0, 3, 4);
     Rail railB(3, 4, 7, 7);
-    Rail::connect(&railA, &railB);
+    bool ret = Rail::connect(&railA, &railB);
+    ASSERT_TRUE(ret);
 
     Position pos(&railB, 2);
 
@@ -115,6 +116,48 @@ TEST(Position, advanceLRF)
     ASSERT_EQ(pos.offset, 4);
 }
 
+TEST(Position, advanceSquare)
+{
+    Rail railA( 0,  0,  6,  8);
+    Rail railB( 6,  8, 14, 14);
+    Rail railC( 8,  6, 14, 14);
+    Rail railD( 0,  0,  8,  6);
+    bool ret;
+    ret = Rail::connect(&railA, &railB);
+    ASSERT_TRUE(ret);
+    ret = Rail::connect(&railC, &railB);
+    ASSERT_TRUE(ret);
+    ret = Rail::connect(&railC, &railD);
+    ASSERT_TRUE(ret);
+    ret = Rail::connect(&railA, &railD);
+    ASSERT_TRUE(ret);
 
+    Position pos(&railA, 4);
+    pos.advance(40);
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.rail, &railA);
+    ASSERT_EQ(pos.offset, 4);
+
+    pos.advance(-9);
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.rail, &railD);
+    ASSERT_EQ(pos.offset, 5);
+
+    pos.advance(-42);
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.rail, &railD);
+    ASSERT_EQ(pos.offset, 3);
+
+    pos.advance(20);
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.rail, &railB);
+    ASSERT_EQ(pos.offset, 7);
+}
+
+/*
+ * TODO:
+ *  - 3 rail test
+ *  - advance to endpoint test
+ */
 
 

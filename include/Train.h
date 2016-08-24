@@ -2,6 +2,8 @@
 
 #include "Rail.h"
 
+#include <vector>
+
 class Train
 {
 public:

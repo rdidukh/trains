@@ -6,15 +6,17 @@
 #include <iostream>
 #include <cmath>
 #include <array>
+#include <functional>
 
 struct Point
 {
-    int x;
-    int y;
+    float x;
+    float y;
     float dist(const Point & p) const;
     bool operator<(const Point & point) const;
     bool operator==(const Point & point) const;
     bool operator!=(const Point & point) const;
+    constexpr static float error = 0.001f;
 };
 
 struct Rail;
@@ -30,7 +32,7 @@ struct Splice
 
 struct Rail
 {
-    Rail(int x1, int y1, int x2, int y2);
+    Rail(float x1, float y1, float x2, float y2);
 
     Rail * next(int end) const;
     static bool connect(Rail * railA, Rail * railB);
@@ -46,11 +48,13 @@ struct Position
     Position(Rail * r = nullptr, float off = 0);
     Rail * rail;
     float offset;
+
     void advance(float distance);
-    /*
-     * TODO:
-     *  Point point();
-     */
+
+    template <class Func>
+    void polyline(float distance);
+
+    Point point();
 };
 
 bool operator<(const Rail & a, const Rail & b);

@@ -15,6 +15,9 @@ public:
 
     void update(float dTime);
 
+    std::vector<Rail*>::iterator railsBegin();
+    std::vector<Rail*>::iterator railsEnd();
+
 private:
     float time;
     std::vector<Rail *> rails;

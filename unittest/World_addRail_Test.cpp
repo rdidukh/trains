@@ -127,3 +127,8 @@ TEST(World, addRailThreeMiddle)
     ASSERT_EQ(rails[2]->next(0), rails[1]);
     ASSERT_EQ(rails[2]->next(1), rails[0]);
 }
+
+/*
+ *  TODO:
+ *   - float test
+ */

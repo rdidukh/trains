@@ -169,6 +169,9 @@ CALL_EXPECT_B_COMMON(actual, expected, comp, cmpName) ASSERT_SUFFIX()
 #define EXPECT_TRUE(actual) EXPECT_U_COMMON(actual, rdns::Is_True())
 #define ASSERT_TRUE(actual) ASSERT_U_COMMON(actual, rdns::Is_True())
 
+#define EXPECT_FALSE(actual) EXPECT_U_COMMON(actual, rdns::NotU<rdns::Is_True>())
+#define ASSERT_FALSE(actual) ASSERT_U_COMMON(actual, rdns::NotU<rdns::Is_True>())
+
 #define EXPECT_NULL(actual) EXPECT_U_COMMON(actual, rdns::Is_Null())
 #define ASSERT_NULL(actual) ASSERT_U_COMMON(actual, rdns::Is_Null())
 

@@ -101,3 +101,13 @@ void World::update(float dTime)
 
     time += dTime;
 }
+
+std::vector<Rail*>::iterator World::railsBegin()
+{
+    return rails.begin();
+}
+
+std::vector<Rail*>::iterator World::railsEnd()
+{
+    return rails.end();
+}
