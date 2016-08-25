@@ -50,9 +50,7 @@ struct Position
     float offset;
 
     void advance(float distance);
-
-    template <class Func>
-    void polyline(float distance);
+    float advanceToPoint(float distance);
 
     Point point();
 };

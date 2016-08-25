@@ -142,13 +142,20 @@ namespace rdns
 
         if(!res)
         {
+            std::ostringstream actOut;
+            actOut << actual;
+            std::ostringstream expOut;
+            expOut << expected;
+
             std::string cmpNameStr = std::string("To be ") + comp.str() + ": ";
             int width = cmpNameStr.length() < 10 ? 10 : cmpNameStr.length();
             std::cout << file << ":" << line << ": Failure" << '\n';
             std::cout << std::setw(width) << "Expected: " << actStr << '\n';
-            std::cout << std::setw(width) << "Which is: " << actual << '\n';
+            if(actOut.str() != actStr)
+                std::cout << std::setw(width) << "Which is: " << actual << '\n';
             std::cout << std::setw(width) << cmpNameStr << expStr << '\n';
-            std::cout << std::setw(width) << "Which is: " << expected << '\n';
+            if(expOut.str() != expStr)
+                std::cout << std::setw(width) << "Which is: " << expected << '\n';
             return false;
         }
 
@@ -162,19 +169,20 @@ namespace rdns
 
         if(!res)
         {
+            std::ostringstream actOut;
+            actOut << actual;
+            std::ostringstream expOut;
+            expOut << expected;
+
             std::string cmpNameStr = std::string("To be ") + comp.str() + ": ";
             int width = cmpNameStr.length() < 10 ? 10 : cmpNameStr.length();
             std::string thirdDescStr = std::string(comp.third()) + ": ";
             if(thirdDescStr.length() > width) width = thirdDescStr.length();
             std::cout << file << ":" << line << ": Failure" << '\n';
             std::cout << std::setw(width) << "Expected: " << actStr << '\n';
-            std::ostringstream actOut;
-            actOut << actual;
             if(actOut.str() != actStr)
                 std::cout << std::setw(width) << "Which is: " << actual << '\n';
             std::cout << std::setw(width) << cmpNameStr << expStr << '\n';
-            std::ostringstream expOut;
-            expOut << expected;
             if(expOut.str() != expStr)
                 std::cout << std::setw(width) << "Which is: " << expected << '\n';
             std::cout << std::setw(width) << thirdDescStr << thirdStr << '\n';

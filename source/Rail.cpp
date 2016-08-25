@@ -138,10 +138,43 @@ void Position::advance(float d)
     }
 }
 
-template<class Func>
-void Position::polyline(float distance)
+float Position::advanceToPoint(float distance)
 {
+    if(rail == nullptr) return 0.0;
+    offset += distance;
+    float ret = 0.0;
 
+    if(offset <= 0.0f)
+    {
+        if(rail->splice[0].end == 0)
+        {
+            ret = -offset;
+            offset = 0.0f;
+        }
+        else if(rail->next(0) != nullptr)
+        {
+            ret = offset;
+            offset = rail->next(0)->length;
+        }
+        rail = rail->next(0);
+    }
+    else if(offset >= rail->length)
+    {
+        offset -= rail->length;
+        if(rail->splice[1].end == 0)
+        {
+            ret = offset;
+            offset = 0.0f;
+        }
+        else if(rail->next(1) != nullptr)
+        {
+            ret = -offset;
+            offset = rail->next(1)->length;
+        }
+        rail = rail->next(1);
+    }
+
+    return ret;
 }
 
 Point Position::point()
