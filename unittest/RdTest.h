@@ -24,6 +24,7 @@ namespace rdns
         std::vector<RdLittleTest *> littleTests;
         std::vector<RdLittleTest *> failed;
         std::string name;
+        static int64_t microseconds();
     public:
         RdBigTest(const std::string & className);
         void addLittleTest(RdLittleTest * littleTest);

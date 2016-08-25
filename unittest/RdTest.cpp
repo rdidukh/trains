@@ -34,6 +34,20 @@ RdLittleTest::RdLittleTest(const std::string & className, const std::string & te
     getBigTest(className).addLittleTest(this);
 }
 
+#if 0
+#ifdef __linux__
+#include <sys/time.h>
+#endif
+
+int64_t RdBigTest::microseconds()
+{
+    timeval tv;
+    gettimeofday(&tv, NULL);
+    int64_t res = static_cast<int64_t>(tv.tv_sec);
+    return res*1000000 + tv.tv_usec;
+}
+#endif
+
 RdBigTest::RdBigTest(const std::string & className):name(className)
 {
 }
@@ -97,6 +111,9 @@ int RdBigTest::run()
     int testCount = littleTests.size();
     std::cout << GREEN_COLOR << "[----------] " << NO_COLOR << testCount << " tests from " << name << '\n';
 
+    // auto totalTime = microseconds();
+    // totalTime = 0;
+
     int fail = 0;
     for(std::vector<RdLittleTest *>::iterator it = littleTests.begin(); it != littleTests.end(); ++it)
     {
@@ -105,7 +122,12 @@ int RdBigTest::run()
         std::cout << GREEN_COLOR << "[ RUN      ] " << NO_COLOR << name << '.' << littleTest.name << '\n';
 
         littleTest.ok = true;
+        // auto start = microseconds();
         littleTest.run();
+        // auto elapsed = microseconds() - start;
+
+        //totalTime += elapsed;
+
         if(littleTest.ok)
         {
             std::cout << GREEN_COLOR << "[       OK ] " << NO_COLOR;
@@ -117,12 +139,12 @@ int RdBigTest::run()
             std::cout << RED_COLOR << "[  FAILED  ] " << NO_COLOR;
         }
 
-        std::cout << name << '.' << littleTest.name << " (n/a ms)\n";
+        std::cout << name << '.' << littleTest.name << /* " (" << elapsed << " us)"  << */ "\n";
 
     }
     
     std::cout << GREEN_COLOR << "[----------] " << NO_COLOR;
-    std::cout << testCount << " test" << plural(testCount) << " from " << name << " (n/a ms total)\n\n";
+    std::cout << testCount << " test" << plural(testCount) << " from " << name << /* " (" << totalTime << " us total)"  << */ "\n\n";
 
     return fail;
 }

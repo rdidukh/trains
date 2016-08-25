@@ -155,6 +155,17 @@ TEST(Position, advanceSquare)
 }
 
 /*
+TEST(Position, advanceFloat)
+{
+    Rail rail(0, 0, 7, 4);
+    Position pos(&rail, 0);
+    pos.advance(-0.5*Point::error());
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.offset, 0);
+}
+*/
+
+/*
  * TODO:
  *  - 3 rail test
  *  - advance to endpoint test

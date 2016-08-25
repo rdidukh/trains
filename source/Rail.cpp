@@ -62,10 +62,10 @@ float Point::dist(const Point &p) const
 
 bool Point::operator<(const Point& p) const
 {
-    int64_t ix = static_cast<int64_t>(x/error+0.5f);
-    int64_t iy = static_cast<int64_t>(y/error+0.5f);
-    int64_t pix = static_cast<int64_t>(p.x/error+0.5f);
-    int64_t piy = static_cast<int64_t>(p.y/error+0.5f);
+    int64_t ix = static_cast<int64_t>(x/error()+0.5f);
+    int64_t iy = static_cast<int64_t>(y/error()+0.5f);
+    int64_t pix = static_cast<int64_t>(p.x/error()+0.5f);
+    int64_t piy = static_cast<int64_t>(p.y/error()+0.5f);
 
     if(ix < pix) return true;
     if(pix < ix) return false;
@@ -74,12 +74,12 @@ bool Point::operator<(const Point& p) const
 
 bool Point::operator==(const Point& p) const
 {
-    return std::fabs(x - p.x) < error && std::fabs(y - p.y) < error;
+    return std::fabs(x - p.x) <= error() && std::fabs(y - p.y) <= error();
 }
 
 bool Point::operator!=(const Point &p) const
 {
-    return std::fabs(x - p.x) >= error || std::fabs(y - p.y) >= error;
+    return std::fabs(x - p.x) >= error() || std::fabs(y - p.y) >= error();
 }
 
 Position::Position(Rail *r, float off):
@@ -147,8 +147,12 @@ void Position::polyline(float distance)
 Point Position::point()
 {
     ASSERT(rail);
-    float x = rail->point[0].x;
-    float y = rail->point[0].y;
+    float x1 = rail->point[0].x;
+    float y1 = rail->point[0].y;
+    float x2 = rail->point[1].x;
+    float y2 = rail->point[1].y;
+    float x = x1 + (x2 - x1) * offset / rail->length;
+    float y = y1 + (y2 - y1) * offset / rail->length;
     return {x, y};
 }
 

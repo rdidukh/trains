@@ -16,7 +16,7 @@ struct Point
     bool operator<(const Point & point) const;
     bool operator==(const Point & point) const;
     bool operator!=(const Point & point) const;
-    constexpr static float error = 0.001f;
+    constexpr static float error() { return 0.001f; }
 };
 
 struct Rail;

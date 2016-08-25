@@ -34,7 +34,7 @@ TEST(Rail, connectNeg)
 
 TEST(Rail, connectFloat)
 {
-    float e = 0.2*Point::error;
+    float e = 0.2*Point::error();
     Rail railA(0, 0, 3+e, 4-e);
     Rail railB(3-e, 4+e, 7, 7);
 
@@ -49,7 +49,7 @@ TEST(Rail, connectFloat)
 
 TEST(Rail, connectFloatNeg)
 {
-    float e = 0.5*Point::error;
+    float e = 0.5*Point::error();
     Rail railA(0, 0, 3+e, 4-e);
     Rail railB(3-e, 4+e, 7, 7);
 
