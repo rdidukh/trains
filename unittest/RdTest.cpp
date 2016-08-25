@@ -53,6 +53,7 @@ int RdBigTest::runAll()
 {
     int big = bigTests->size();
     int little = 0;
+    std::vector<std::string> failedTestNames;
 
     for(std::map<std::string, RdBigTest>::iterator it = bigTests->begin(); it != bigTests->end(); ++it)
     {
@@ -68,6 +69,10 @@ int RdBigTest::runAll()
     for(std::map<std::string, RdBigTest>::iterator it = bigTests->begin(); it != bigTests->end(); ++it)
     {
         failed += it->second.run();
+        for(std::vector<RdLittleTest*>::iterator jt = it->second.failed.begin(); jt != it->second.failed.end(); ++jt)
+        {
+            failedTestNames.push_back(it->second.name + "." + (*jt)->name);
+        }
     }   
 
     std::cout << GREEN_COLOR << "[----------]" << NO_COLOR << " Global test environment tear-down\n";
@@ -78,8 +83,8 @@ int RdBigTest::runAll()
     if(failed > 0)
     {
         std::cout << RED_COLOR << "[  FAILED  ] " << NO_COLOR << failed << " test" << plural(failed) << ", listed below:\n";
-        for(int i = 0; i < failed; i++)
-            std::cout << RED_COLOR << "[  FAILED  ]" << NO_COLOR << " N/A\n";
+        for(size_t i = 0; i < failedTestNames.size(); i++)
+            std::cout << RED_COLOR << "[  FAILED  ]" << NO_COLOR << " " << failedTestNames[i] << "\n";
         std::cout << '\n';
         std::cout << failed << " FAILED TEST" << plural(failed, true) << "\n";
     }
@@ -108,6 +113,7 @@ int RdBigTest::run()
         else
         {
             fail++;
+            failed.push_back(*it);
             std::cout << RED_COLOR << "[  FAILED  ] " << NO_COLOR;
         }
 
