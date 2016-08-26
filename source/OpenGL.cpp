@@ -3,6 +3,9 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
+#include "Train.h"
+#include "Assert.h"
+
 OpenGL* OpenGL::openGL = nullptr;
 
 void OpenGL::reshape_static()
@@ -29,7 +32,35 @@ void OpenGL::display(void)
     glVertexPointer(2, GL_FLOAT, 0, rails.data());
     glDrawArrays(GL_LINES, 0, rails.size());
 
+    size_t n = trains.size();
+    float * data = trains.data();
 
+    for(auto it = world.trainsBegin(); it != world.trainsEnd(); ++it)
+    {
+        Train * train = *it;
+
+        train->polyline([&data, &n](const Point & point, int index)
+        {
+            if(index > 1)
+            {
+                *data = *(data-2);
+                data++;
+                *data = *(data-2);
+                data++;
+            }
+
+            *data = point.x;
+            data++;
+            *data = point.y;
+            data++;
+        });
+
+    }
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertexPointer(2, GL_FLOAT, 0, trains.data());
+    glDrawArrays(GL_LINES, 0, (data-trains.data())/2);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -38,7 +69,7 @@ void OpenGL::display(void)
 
 void OpenGL::timer(int ms)
 {
-    world.update(0.000001f*ms);
+    world.update(0.001f*ms);
     glutPostRedisplay();
 }
 
@@ -50,7 +81,9 @@ OpenGL::OpenGL(World &world): world(world)
     // Setup windwing
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    glutInitWindowSize(800, 600);
+    int height = 600;
+    int width = 800;
+    glutInitWindowSize(width, height);
     glutCreateWindow("Trains");
 
     for(auto it = world.railsBegin(); it != world.railsEnd(); ++it)
@@ -69,7 +102,35 @@ OpenGL::OpenGL(World &world): world(world)
         rails.push_back(y2);
     }
 
-/*
+    trains.resize(100);
+
+    float xpp = (maxX - minX) / width;
+    float ypp = (maxY - minY) / height;
+
+    std::cout << "OpenGL: xpp = " << xpp << "\n";
+    std::cout << "OpenGL: ypp = " << ypp << "\n";
+
+    if(xpp >= ypp)
+    {
+        float dy = (maxX-minX) * height / width - (maxY-minY);
+        minY -= 0.5*dy;
+        maxY += 0.5*dy;
+        ypp = (maxY - minY) / height;
+    }
+    else
+    {
+        float dx = (maxY-minY) * width / height - (maxX - minX);
+        minX -= 0.5*dx;
+        maxX += 0.5*dx;
+        xpp = (maxX - minX) / width;
+    }
+
+    std::cout << "OpenGL: xpp = " << xpp << "\n";
+    std::cout << "OpenGL: ypp = " << ypp << "\n";
+
+    ASSERT(fabs(xpp-ypp)/fabs(xpp) < 0.01f);
+
+    /*
     glEnable (GL_LINE_SMOOTH);
     glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
 */

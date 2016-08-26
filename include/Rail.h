@@ -36,25 +36,35 @@ struct Rail
 
     Rail * next(int end) const;
     static bool connect(Rail * railA, Rail * railB);
+    bool operator<(const Rail & a) const;
 
     std::array<Point,  2> point;
     std::array<Splice, 2> splice;
     float length;
 };
 
+struct Interval
+{
+    Interval(Rail * r, float s, float e);
+    Rail * rail;
+    float start;
+    float end;
+    bool operator<(const Interval & ival) const;
+};
 
 struct Position
 {
     Position(Rail * r = nullptr, float off = 0);
+
+    float advance(float distance);
+    float advanceToPoint(float distance);
+    Interval interval(float distance);
+    Point point();
+
     Rail * rail;
     float offset;
-
-    void advance(float distance);
-    float advanceToPoint(float distance);
-
-    Point point();
 };
 
-bool operator<(const Rail & a, const Rail & b);
+
 std::ostream & operator<<(std::ostream & os, Rail & rail);
 

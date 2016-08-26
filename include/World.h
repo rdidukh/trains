@@ -18,10 +18,14 @@ public:
     std::vector<Rail*>::iterator railsBegin();
     std::vector<Rail*>::iterator railsEnd();
 
+    std::vector<Train*>::iterator trainsBegin();
+    std::vector<Train*>::iterator trainsEnd();
+
 private:
     float time;
     std::vector<Rail *> rails;
     std::set<Rail* > allocRails;
     std::map<Point, std::vector<Splice>> points;
     std::vector<Train *> trains;
+    std::set<Interval> trainIvals;
 };

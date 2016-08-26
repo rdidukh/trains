@@ -41,11 +41,11 @@ std::ostream & operator<<(std::ostream & os, Rail & rail)
     return os;
 }
 
-bool operator<(const Rail & a, const Rail & b)
+bool Rail::operator<(const Rail & rail) const
 {
-    if(a.point[0] < b.point[0]) return true;
-    if(b.point[0] < a.point[0]) return false;
-    return a.point[1] < b.point[1];
+    if(point[0] < rail.point[0]) return true;
+    if(rail.point[0] < point[0]) return false;
+    return point[1] < rail.point[1];
 }
 
 bool operator<(const Point & a, const Point & b)
@@ -89,53 +89,16 @@ Position::Position(Rail *r, float off):
 }
 
 
-void Position::advance(float d)
+float Position::advance(float d)
 {
-    offset += d ;
-
-    while(rail && (offset < 0 || offset > rail->length))
+    float ret = std::copysignf(1.0f, d);
+    while(d != 0.0)
     {
-        offset -= offset > 0 ? rail->length : 0.0;
-        int end = static_cast<int>(std::copysign(0.5, offset) + 0.5);
-
-        if(rail->splice[end].end == 0)
-        {
-            offset = std::fabs(offset);
-        }
-        else if(rail->next(end) != nullptr)
-        {
-            offset = rail->next(end)->length - std::fabs(offset);
-        }
-        rail = rail->next(end);
-#if 0
-        if(offset > rail->length)
-        {
-            offset -= rail->length;
-            if(rail->splice[1].end == 0)
-            {
-                offset = offset;
-            }
-            else if(rail->splice[1].rail != nullptr)
-            {
-                offset = rail->next(1)->length - offset;
-            }
-            rail = rail->next(1);
-        }
-        else if(offset < 0)
-        {
-            offset -= 0;
-            if(rail->splice[0].end == 0)
-            {
-                offset = -offset;
-            }
-            else if(rail->splice[0].rail != nullptr)
-            {
-                offset = rail->next(0)->length + offset;
-            }
-            rail = rail->next(0);
-        }
-#endif
+        ret = std::copysignf(1.0f, d);
+        d = advanceToPoint(d);
     }
+
+    return ret;
 }
 
 float Position::advanceToPoint(float distance)
@@ -175,6 +138,23 @@ float Position::advanceToPoint(float distance)
     }
 
     return ret;
+}
+
+Interval::Interval(Rail* r, float s, float e):
+    rail(r), start(s), end(e)
+{
+
+}
+
+Interval Position::interval(float distance)
+{
+    float off = offset + distance;
+    off = std::max(off, 0.0f);
+    off = std::min(off, rail->length);
+    float start = std::min(offset, off);
+    float end   = std::max(offset, off);
+
+    return Interval(rail, start, end);
 }
 
 Point Position::point()

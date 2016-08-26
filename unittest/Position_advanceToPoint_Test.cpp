@@ -139,3 +139,21 @@ TEST(Position, advanceToPoint_RL)
     ASSERT_EQ(pos.offset, 2);
     ASSERT_EQ(left, 0);
 }
+
+TEST(Position, advanceToPoint_Endpoint)
+{
+    Rail railA(0, 0, 3, 4);
+    Rail railB(3, 4, 7, 7);
+    bool ret = Rail::connect(&railA, &railB);
+    ASSERT_TRUE(ret);
+
+    Position pos(&railA, 2);
+
+    float left = pos.advanceToPoint(3);
+
+    ASSERT_NOTNULL(pos.rail);
+    ASSERT_EQ(pos.rail, &railB);
+    ASSERT_EQ(pos.offset, 0);
+    ASSERT_EQ(left, 0);
+
+}

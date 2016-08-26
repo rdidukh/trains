@@ -83,12 +83,17 @@ void World::addTrain(Train& train)
 
 void World::moveTrain(Train *train, float dTime)
 {
-    train->head.advance(dTime * train->speed);
+    float dir = train->head.advance(dTime * train->speed);
+    train->speed = dir * std::fabs(train->speed);
+    train->length = dir * std::fabs(train->length);
 }
 
 void World::updateTrain(Train *train, float dTime)
 {
-    train->speed += dTime * 0;
+    if(train->speed < 0)
+        train->speed -= dTime * 0;
+    else
+        train->speed += dTime * 0;
 }
 
 void World::update(float dTime)
@@ -110,4 +115,14 @@ std::vector<Rail*>::iterator World::railsBegin()
 std::vector<Rail*>::iterator World::railsEnd()
 {
     return rails.end();
+}
+
+std::vector<Train*>::iterator World::trainsBegin()
+{
+    return trains.begin();
+}
+
+std::vector<Train*>::iterator World::trainsEnd()
+{
+    return trains.end();
 }
