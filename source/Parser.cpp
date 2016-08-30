@@ -55,7 +55,7 @@ bool Parser::parseRails(Json::Value obj, std::vector<ParserRail> & parserRails)
             }
             if(!parserRails.back().id.empty() && parserRails.back().points.size() != 4)
             {
-                std::cout << "Rail with id " << parserRails.back().id << " has size != 4.";
+                errStr << "Rail with id " << parserRails.back().id << " has more than 2 points";
                 parserRails.clear();
                 return false;
             }
@@ -78,7 +78,7 @@ bool Parser::parseRail(Json::Value obj, ParserRail &rail)
     }
     else if(obj.isObject())
     {
-        if(obj.isMember("id"))
+        if(!obj.isMember("id"))
         {
             errStr << "rail is Object but has no id";
             return false;
@@ -94,7 +94,7 @@ bool Parser::parseRail(Json::Value obj, ParserRail &rail)
 
         if(!obj.isMember("points"))
         {
-            errStr << "rail is Object but has no points";
+            errStr << "rail is an Object but has no points";
             return false;
         }
 
@@ -106,7 +106,7 @@ bool Parser::parseRail(Json::Value obj, ParserRail &rail)
             return false;
         }
 
-        bool ret = parsePoints(obj, rail.points);
+        bool ret = parsePoints(ptsObj, rail.points);
         if(!ret)
             return false;
     }
@@ -148,8 +148,6 @@ bool Parser::parsePoints(Json::Value obj, std::vector<float> &points)
         errStr << "points array must be an array of arrays or numbers";
         return false;
     }
-
-    /* TODO: to do something with points vector */
 
     return true;
 }
